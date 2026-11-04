@@ -1,0 +1,406 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Maroura's Birthday Quest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: one phone-sized column. A cat host with subtitle captions on top, then one card at a time: title, 7 quiz episodes, result, yarn-unravel gift. Blue and black, stitched borders. */
+:root {
+  --bg: #060A14; --bg2: #0E1A3A; --surface: #0D1630; --fg: #EAF1FF; --muted: #93A6C8;
+  --blue: #4A90FF; --on-blue: #04122B; --blue-d: #2A62C8; --glow: #8FBFFF;
+  --line: #22345E; --stitch: #3A5FA8;
+  --good: #3DDC97; --good-bg: rgba(61,220,151,.13); --bad: #FF6B81; --bad-bg: rgba(255,107,129,.12);
+  --cat: #0F1730; --cat-line: #4A90FF; --eye: #6DB6FF; --sub-bg: rgba(0,0,0,.74); --sub-fg: #FFFFFF;
+  --font-display: "Jua", "Nunito", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #E9F0FF; --bg2: #D2E1FF; --surface: #FFFFFF; --fg: #0A1020; --muted: #4F5F7E;
+    --blue: #1F5FD6; --on-blue: #FFFFFF; --blue-d: #1A3F96; --glow: #2D6BE0;
+    --line: #BCCCEB; --stitch: #7A98D6;
+    --good: #12894F; --good-bg: rgba(18,137,79,.1); --bad: #C62A44; --bad-bg: rgba(198,42,68,.08);
+    --cat: #10162A; --cat-line: transparent; --eye: #6DB6FF; --sub-bg: rgba(10,16,32,.86);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #E9F0FF; --bg2: #D2E1FF; --surface: #FFFFFF; --fg: #0A1020; --muted: #4F5F7E;
+  --blue: #1F5FD6; --on-blue: #FFFFFF; --blue-d: #1A3F96; --glow: #2D6BE0;
+  --line: #BCCCEB; --stitch: #7A98D6;
+  --good: #12894F; --good-bg: rgba(18,137,79,.1); --bad: #C62A44; --bad-bg: rgba(198,42,68,.08);
+  --cat: #10162A; --cat-line: transparent; --eye: #6DB6FF; --sub-bg: rgba(10,16,32,.86);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(120% 55% at 50% 0%, var(--bg2), transparent 70%);
+  background-repeat: no-repeat;
+  color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+  padding-block: 14px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; margin: 0; text-wrap: balance; line-height: 1.15; }
+button { font-family: inherit; }
+main { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+.bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--glow); opacity: .5; animation: tw 3s ease-in-out infinite; }
+@keyframes tw { 0%, 100% { opacity: .15; transform: scale(.8); } 50% { opacity: .8; transform: scale(1.4); } }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.date { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.snd { background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: .85rem; font-weight: 700; cursor: pointer; min-height: 36px; }
+.snd:focus-visible, .btn:focus-visible, .opt:focus-visible, .yarn:focus-visible { outline: 3px solid var(--glow); outline-offset: 3px; }
+
+.stage { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cat { width: min(62vw, 230px); height: auto; overflow: visible; }
+.cat .fur { fill: var(--cat); stroke: var(--cat-line); stroke-width: 2; }
+.cat .ear-in { fill: var(--blue-d); opacity: .6; }
+.cat .eye { fill: var(--eye); transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
+.cat .pupil { fill: #02050C; transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
+.cat .arc { fill: none; stroke: var(--eye); stroke-width: 4; stroke-linecap: round; display: none; }
+.cat .nose { fill: #FF8FB1; }
+.cat .mouth, .cat .wh { fill: none; stroke: var(--eye); stroke-width: 2; stroke-linecap: round; opacity: .9; }
+.cat .tail { fill: none; stroke: var(--cat); stroke-width: 16; stroke-linecap: round; transform-box: fill-box; transform-origin: 0% 100%; animation: tail 2.6s ease-in-out infinite alternate; }
+.cat.happy .eye, .cat.happy .pupil { display: none; }
+.cat.happy .arc { display: block; }
+.cat.happy { animation: hop .5s ease; }
+.cat.sad { animation: shake .45s ease; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.08); } }
+@keyframes tail { from { transform: rotate(-10deg); } to { transform: rotate(14deg); } }
+@keyframes hop { 0% { transform: translateY(0); } 40% { transform: translateY(-16px) rotate(-3deg); } 100% { transform: translateY(0); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(9px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
+
+.sub {
+  background: var(--sub-bg); color: var(--sub-fg); border-radius: 10px; padding: 8px 16px;
+  font-weight: 700; font-size: .98rem; text-align: center; max-width: 100%; min-height: 40px;
+  display: flex; align-items: center; justify-content: center; text-wrap: balance;
+}
+
+.card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 26px 22px; display: flex; flex-direction: column; gap: 16px; animation: rise .45s ease both; }
+.card::before { content: ""; position: absolute; inset: 6px; border: 2px dashed var(--stitch); border-radius: 17px; pointer-events: none; opacity: .75; }
+.card > * { position: relative; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.kicker { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 800; color: var(--glow); }
+.card h1 { font-size: clamp(2rem, 9.5vw, 2.7rem); }
+.card h2 { font-size: clamp(1.4rem, 6.4vw, 1.8rem); }
+.card p { margin: 0; color: var(--muted); }
+
+.btn { align-self: stretch; background: var(--blue); color: var(--on-blue); border: 0; border-radius: 14px; padding: 13px 22px; font-size: 1.05rem; font-weight: 800; cursor: pointer; min-height: 50px; transition: transform .15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--fg); border: 1.5px solid var(--line); }
+
+.stitches { display: flex; gap: 6px; }
+.stitches i { flex: 1; height: 7px; border-radius: 4px; background: var(--line); transition: background .3s; }
+.stitches i.cur { background: var(--stitch); }
+.stitches i.ok { background: var(--blue); }
+.stitches i.no { background: var(--bad); opacity: .7; }
+
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { text-align: left; background: transparent; color: var(--fg); border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 16px; font-size: 1rem; font-weight: 700; cursor: pointer; min-height: 52px; transition: border-color .15s, background .15s, transform .15s; }
+.opt:hover:not(:disabled) { border-color: var(--blue); transform: translateX(3px); }
+.opt:disabled { cursor: default; color: var(--fg); }
+.opt.good { border-color: var(--good); background: var(--good-bg); }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); animation: shake .4s; }
+.opt.dim { opacity: .5; }
+
+.score { display: flex; align-items: baseline; gap: 10px; }
+.score b { font-family: var(--font-display); font-weight: 400; font-size: 3.4rem; color: var(--blue); line-height: 1; }
+.score span { color: var(--muted); font-weight: 700; }
+
+.yarnwrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.yarn { background: none; border: 0; padding: 0; cursor: pointer; border-radius: 50%; }
+.yarn svg { width: min(62vw, 230px); height: auto; overflow: visible; }
+.yarn .ball { transform-box: fill-box; transform-origin: center; transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.yarn.wob .ball { animation: wob .4s ease; }
+@keyframes wob { 0% { transform: rotate(0) scale(var(--s, 1)); } 50% { transform: rotate(-14deg) scale(calc(var(--s, 1) * 1.06)); } 100% { transform: rotate(0) scale(var(--s, 1)); } }
+.yarn .ballfill { fill: var(--blue); }
+.yarn .lines path { fill: none; stroke: var(--on-blue); stroke-width: 3; stroke-linecap: round; opacity: .55; }
+.yarn .thread { fill: none; stroke: var(--blue); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset .4s ease; }
+.hint { color: var(--muted); font-weight: 700; font-size: .95rem; }
+
+.letter { display: flex; flex-direction: column; gap: 14px; }
+.letter .big { font-family: var(--font-display); font-size: clamp(1.7rem, 8vw, 2.3rem); color: var(--fg); line-height: 1.2; }
+.letter p { color: var(--fg); }
+.letter .l { opacity: 0; transform: translateY(10px); animation: rise .6s ease forwards; }
+.letter .l:nth-child(1) { animation-delay: .1s; } .letter .l:nth-child(2) { animation-delay: .9s; }
+.letter .l:nth-child(3) { animation-delay: 1.7s; } .letter .l:nth-child(4) { animation-delay: 2.5s; } .letter .l:nth-child(5) { animation-delay: 3.2s; }
+.from { font-family: var(--font-display); font-size: 1.5rem; color: var(--glow); }
+.days { display: inline-block; align-self: flex-start; font-size: .8rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px dashed var(--stitch); border-radius: 999px; padding: 4px 12px; }
+
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+@media (prefers-reduced-motion: reduce) {
+  .cat *, .cat, .bg i, .card, .letter .l, .opt.bad { animation: none !important; }
+  .letter .l { opacity: 1; transform: none; }
+}
+</style>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="bg" id="bg" aria-hidden="true"></div>
+
+<main>
+  <header class="top">
+    <span class="date">November 5</span>
+    <button class="snd" id="snd" type="button" aria-pressed="false">Sound: on</button>
+  </header>
+
+  <section class="stage">
+    <svg class="cat" id="cat" viewBox="0 0 200 175" role="img" aria-label="A black cat with blue eyes">
+      <path class="tail" d="M150 150 C 196 150, 198 96, 176 84"/>
+      <ellipse class="fur" cx="100" cy="150" rx="64" ry="36"/>
+      <polygon class="fur" points="52,66 44,14 92,44"/>
+      <polygon class="fur" points="148,66 156,14 108,44"/>
+      <polygon class="ear-in" points="55,56 50,28 78,46"/>
+      <polygon class="ear-in" points="145,56 150,28 122,46"/>
+      <ellipse class="fur" cx="100" cy="92" rx="58" ry="50"/>
+      <ellipse class="eye" cx="78" cy="88" rx="10" ry="12"/>
+      <ellipse class="eye" cx="122" cy="88" rx="10" ry="12"/>
+      <ellipse class="pupil" cx="78" cy="88" rx="3.4" ry="10"/>
+      <ellipse class="pupil" cx="122" cy="88" rx="3.4" ry="10"/>
+      <path class="arc" d="M66 92 q12 -14 24 0"/>
+      <path class="arc" d="M110 92 q12 -14 24 0"/>
+      <path class="nose" d="M94 106 h12 l-6 7z"/>
+      <path class="mouth" id="mouth" d="M100 113 q-5 8 -12 3 M100 113 q5 8 12 3"/>
+      <path class="wh" d="M60 108 l-28 -5 M60 114 l-28 4 M140 108 l28 -5 M140 114 l28 4"/>
+      <ellipse class="fur" cx="76" cy="168" rx="16" ry="8"/>
+      <ellipse class="fur" cx="124" cy="168" rx="16" ry="8"/>
+    </svg>
+    <div class="sub" id="sub" aria-live="polite"></div>
+  </section>
+
+  <section class="card" id="s-title">
+    <div class="kicker">A tiny K-drama in 7 episodes</div>
+    <h1>Spot the real Maroura</h1>
+    <p>Starring you, one very judgmental cat and a lot of yarn. Answer each episode, collect stitches, and unlock your gift at the end.</p>
+    <button class="btn" id="start" type="button">Press play</button>
+  </section>
+
+  <section class="card" id="s-quiz" hidden>
+    <div class="stitches" id="stitches" aria-hidden="true"></div>
+    <div class="kicker" id="ep"></div>
+    <h2 id="q"></h2>
+    <div class="opts" id="opts"></div>
+    <button class="btn" id="next" type="button" hidden>Next episode</button>
+  </section>
+
+  <section class="card" id="s-result" hidden>
+    <div class="kicker">Season finale</div>
+    <div class="score"><b id="sc">0</b><span id="sctot">stitches</span></div>
+    <h2 id="rt"></h2>
+    <p id="rd"></p>
+    <button class="btn" id="togift" type="button">Open your gift</button>
+  </section>
+
+  <section class="card" id="s-gift" hidden>
+    <div id="yarnbox" class="yarnwrap">
+      <div class="kicker">Your gift is wrapped in yarn</div>
+      <button class="yarn" id="yarn" type="button" aria-label="Tap the yarn ball to unravel it">
+        <svg viewBox="0 0 220 230">
+          <path class="thread" id="thread" pathLength="100" d="M150 150 C 208 168, 196 222, 112 222 S 24 204 52 178"/>
+          <g class="ball" id="ball">
+            <circle class="ballfill" cx="110" cy="96" r="66"/>
+            <g class="lines">
+              <path d="M58 74 q52 -30 104 0"/><path d="M46 100 q64 -28 128 0"/><path d="M54 128 q56 -26 112 0"/>
+              <path d="M84 44 q-22 52 14 104"/><path d="M128 40 q28 52 -8 108"/>
+            </g>
+          </g>
+        </svg>
+      </button>
+      <div class="hint" id="yhint">Tap the yarn 6 times</div>
+    </div>
+    <div class="letter" id="letter" hidden>
+      <div class="l big">Happy Birthday to the best shorty girl ever.</div>
+      <p class="l">All it took was one Instagram comment and one message, and I would do it again. Thank you for every voice note and for making me laugh. I will keep teasing you about the way you end them with “something like this”, because I love hearing it.</p>
+      <p class="l">I hope this year brings you calm cats, blue skies, endless K-drama episodes, and a crochet project so big you run out of yarn.</p>
+      <div class="l from">Mohamed</div>
+      <div class="l days" id="days" hidden></div>
+    </div>
+    <button class="btn ghost" id="again" type="button" hidden>Play again</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  var Q = [
+    { t: "What is Maroura's favorite color?", o: [
+      ["Pink", 0, "Plot twist nobody asked for."], ["Blue and black", 1, "Correct. Elegant, obviously."],
+      ["Neon orange", 0, "My eyes. Please no."], ["Beige", 0, "Beige is a mood, not a color."] ] },
+    { t: "Which animal rules her heart?", o: [
+      ["Dog", 0, "The cat is looking at you. Slowly."], ["Cat", 1, "Of course. The only correct answer."],
+      ["Goldfish", 0, "Three-second memory. Not her."], ["Dinosaur", 0, "Cool, but extinct."] ] },
+    { t: "What does she make with her own two hands?", o: [
+      ["Pizza", 0, "Delicious idea, wrong answer."], ["Crochet", 1, "Every stitch is perfect."],
+      ["Rockets", 0, "NASA called. She said no."], ["Wi-Fi", 0, "If only."] ] },
+    { t: "A K-drama ends on a cliffhanger. What does she do?", o: [
+      ["Hits Next Episode at once", 1, "Respect. No mercy for sleep."], ["Stays up until sunrise to finish the season", 1, "A true professional."],
+      ["Cries first, asks questions later", 1, "The only correct way to watch."], ["Goes to bed like a normal person", 0, "Who are we talking about? Not her."] ] },
+    { t: "Where is the best shorty in the world from?", o: [
+      ["Paris", 0, "Lovely, but no."], ["Chlef, Algeria", 1, "Chlef to the world."],
+      ["Seoul", 0, "In her K-drama dreams only."], ["Mars", 0, "Not yet."] ] },
+    { t: "How tall is she, officially?", o: [
+      ["Giant. Basketball material.", 0, "I would pay to see that."], ["Shorty. Fun-size and undefeated.", 1, "Short? Never. Concentrated awesomeness."],
+      ["Taller than the tallest cat tree", 0, "Cat tree: 1. Maroura: 0."], ["Invisible", 0, "You cannot hide a personality like that."] ] },
+    { t: "What is the best part of a voice note from Maroura?", o: [
+      ["She ends it with “Something like this”", 1, "Every single time. We are all waiting for it."], ["The suspense before it plays", 1, "Pure drama. I approve."],
+      ["The length", 0, "Never long enough."], ["The background noise", 0, "That is also a vibe."] ] }
+  ];
+  var TIERS = [
+    [7, "Main Character", "A perfect score. The writers are taking notes."],
+    [5, "Drama Lead", "Almost flawless. A second season is guaranteed."],
+    [3, "Plot Twist Queen", "Chaos suits you. Nobody saw that coming."],
+    [0, "Certified Cat Whisperer", "Zero rules, all style. The cat respects it."]
+  ];
+  var NEED = 6;
+
+  function $(id) { return document.getElementById(id); }
+  var cat = $("cat"), sub = $("sub"), mouth = $("mouth");
+  var screens = { title: $("s-title"), quiz: $("s-quiz"), result: $("s-result"), gift: $("s-gift") };
+  var i = 0, score = 0, locked = false, taps = 0, results = [];
+
+  /* sound */
+  var ac = null, muted = false;
+  function beep(f, d, when, type) {
+    if (muted) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + (when || 0);
+      o.type = type || "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + d + 0.02);
+    } catch (e) {}
+  }
+  var sfx = {
+    good: function () { beep(660, .14); beep(880, .2, .12); },
+    bad: function () { beep(220, .25, 0, "triangle"); },
+    tap: function () { beep(520 + taps * 60, .1, 0, "triangle"); },
+    win: function () { [523, 659, 784, 1047].forEach(function (f, k) { beep(f, .25, k * .13); }); }
+  };
+  $("snd").addEventListener("click", function () {
+    muted = !muted; this.textContent = "Sound: " + (muted ? "off" : "on"); this.setAttribute("aria-pressed", String(muted));
+  });
+
+  /* cat */
+  function mood(m) {
+    cat.classList.remove("happy", "sad"); void cat.getBoundingClientRect();
+    if (m) cat.classList.add(m);
+    mouth.setAttribute("d", m === "sad" ? "M100 115 q-5 -6 -12 -1 M100 115 q5 -6 12 -1" : m === "happy" ? "M100 113 q-6 12 -14 4 M100 113 q6 12 14 4" : "M100 113 q-5 8 -12 3 M100 113 q5 8 12 3");
+  }
+  function say(t) { sub.textContent = t; }
+
+  function show(n) { for (var k in screens) screens[k].hidden = (k !== n); screens[n].style.animation = "none"; void screens[n].offsetHeight; screens[n].style.animation = ""; }
+
+  /* quiz */
+  function stitches() {
+    var s = $("stitches"); s.innerHTML = "";
+    Q.forEach(function (_, k) { var e = document.createElement("i"); e.className = results[k] === 1 ? "ok" : results[k] === 0 ? "no" : k === i ? "cur" : ""; s.appendChild(e); });
+  }
+  function render() {
+    locked = false; mood(null);
+    $("ep").textContent = "Episode " + (i + 1) + " of " + Q.length;
+    $("q").textContent = Q[i].t;
+    $("next").hidden = true;
+    $("next").textContent = i === Q.length - 1 ? "See my result" : "Next episode";
+    var box = $("opts"); box.innerHTML = "";
+    Q[i].o.forEach(function (o) {
+      var b = document.createElement("button"); b.className = "opt"; b.type = "button"; b.textContent = o[0];
+      b.addEventListener("click", function () { pick(b, o); }); box.appendChild(b);
+    });
+    stitches();
+    say(["Choose carefully.", "I am watching you.", "No pressure.", "Think like a main character.", "This one is easy.", "Be honest.", "Last episode. Go."][i]);
+  }
+  function pick(btn, o) {
+    if (locked) return; locked = true;
+    var btns = $("opts").children;
+    results[i] = o[1];
+    if (o[1]) { score++; btn.classList.add("good"); mood("happy"); sfx.good(); burst(40); }
+    else {
+      btn.classList.add("bad"); mood("sad"); sfx.bad();
+      for (var k = 0; k < btns.length; k++) if (Q[i].o[k][1]) { btns[k].classList.add("good"); break; }
+    }
+    for (var k2 = 0; k2 < btns.length; k2++) { btns[k2].disabled = true; if (!btns[k2].classList.contains("good") && !btns[k2].classList.contains("bad")) btns[k2].classList.add("dim"); }
+    say(o[2]); stitches(); $("next").hidden = false; $("next").focus({ preventScroll: true });
+  }
+  $("start").addEventListener("click", function () { i = 0; score = 0; results = []; show("quiz"); render(); sfx.tap(); });
+  $("next").addEventListener("click", function () { i++; if (i < Q.length) render(); else finish(); });
+
+  function finish() {
+    var t = TIERS[TIERS.length - 1];
+    for (var k = 0; k < TIERS.length; k++) if (score >= TIERS[k][0]) { t = TIERS[k]; break; }
+    $("sc").textContent = score; $("sctot").textContent = "of " + Q.length + " stitches";
+    $("rt").textContent = t[1]; $("rd").textContent = t[2];
+    show("result"); mood("happy"); say("Congratulations. The cat is impressed."); sfx.win(); burst(120);
+  }
+  $("togift").addEventListener("click", function () { taps = 0; resetYarn(); show("gift"); mood(null); say("Tap the yarn. Do not stop now."); });
+
+  /* yarn */
+  function resetYarn() {
+    $("yarnbox").hidden = false; $("letter").hidden = true; $("again").hidden = true;
+    $("thread").style.strokeDashoffset = 100; $("ball").style.removeProperty("--s"); $("ball").style.transform = "";
+    $("yhint").textContent = "Tap the yarn " + NEED + " times";
+  }
+  $("yarn").addEventListener("click", function () {
+    if (taps >= NEED) return; taps++;
+    var left = NEED - taps, s = 1 - taps * 0.1;
+    $("ball").style.setProperty("--s", s); $("ball").style.transform = "scale(" + s + ")";
+    $("thread").style.strokeDashoffset = 100 - (taps / NEED) * 100;
+    var y = $("yarn"); y.classList.remove("wob"); void y.offsetWidth; y.classList.add("wob");
+    sfx.tap(); mood("happy");
+    var lines = ["Keep going.", "Almost there.", "The cat is getting excited.", "Two more.", "One more."];
+    if (left > 0) { $("yhint").textContent = left + (left === 1 ? " tap left" : " taps left"); say(lines[taps - 1] || "Keep going."); }
+    else reveal();
+  });
+  function reveal() {
+    $("yarnbox").hidden = true; $("letter").hidden = false; $("again").hidden = false;
+    say("Happy Birthday, Maroura."); mood("happy"); sfx.win(); burst(180); setTimeout(function () { burst(120); }, 700);
+    var d = Math.floor((new Date() - new Date(2026, 8, 13)) / 86400000);
+    if (d > 0) { $("days").hidden = false; $("days").textContent = "Day " + d + " since the first message"; }
+    screens.gift.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("again").addEventListener("click", function () { show("title"); mood(null); say("Ready for another round?"); });
+
+  /* ambient dots */
+  var bg = $("bg");
+  for (var n = 0; n < 30; n++) {
+    var d = document.createElement("i");
+    d.style.left = Math.random() * 100 + "%"; d.style.top = Math.random() * 100 + "%";
+    d.style.animationDelay = (Math.random() * 3) + "s"; d.style.animationDuration = (2 + Math.random() * 3) + "s";
+    bg.appendChild(d);
+  }
+
+  /* confetti */
+  var cv = $("confetti"), cx = cv.getContext("2d"), parts = [], run = false;
+  var pal = ["#4A90FF", "#8FBFFF", "#FFFFFF", "#FFD166", "#FF8FB1", "#1F5FD6"];
+  function size() { cv.width = innerWidth; cv.height = innerHeight; }
+  addEventListener("resize", size); size();
+  function burst(count) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (var k = 0; k < count; k++) {
+      parts.push({ x: innerWidth / 2, y: innerHeight * 0.35, vx: (Math.random() - .5) * 16, vy: -Math.random() * 13 - 3,
+        s: 5 + Math.random() * 6, c: pal[k % pal.length], r: Math.random() * 6, vr: (Math.random() - .5) * .3, life: 130 + Math.random() * 70, round: k % 4 === 0 });
+    }
+    if (!run) { run = true; requestAnimationFrame(tick); }
+  }
+  function tick() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(function (p) { return p.life > 0 && p.y < cv.height + 20; });
+    parts.forEach(function (p) {
+      p.vy += .28; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c;
+      if (p.round) { cx.beginPath(); cx.arc(0, 0, p.s / 2, 0, 6.3); cx.fill(); } else cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+      cx.restore();
+    });
+    if (parts.length) requestAnimationFrame(tick); else { run = false; cx.clearRect(0, 0, cv.width, cv.height); }
+  }
+
+  mood(null); say("Maroura, there is a cat who wants to meet you.");
+})();
+</script>
+
+</body></html>
